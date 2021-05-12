@@ -20,3 +20,5 @@ after_success:
   - docker push shidlovsky/multi-server
   - docker push shidlovsky/multi-nginx
   - docker push shidlovsky/multi-worker
+
+language: generic
