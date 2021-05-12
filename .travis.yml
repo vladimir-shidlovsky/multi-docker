@@ -1,0 +1,22 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t shidlovsky/client-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true shidlovsky/client-test npm test
+
+after_success:
+  - docker build -t shidlovsky/multi-client ./client
+  - docker build -t shidlovsky/multi-server ./server
+  - docker build -t shidlovsky/multi-nginx ./nginx
+  - docker build -t shidlovsky/multi-worker ./worker
+
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  
+  - docker push shidlovsky/multi-client
+  - docker push shidlovsky/multi-server
+  - docker push shidlovsky/multi-nginx
+  - docker push shidlovsky/multi-worker
